@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jeu de gestion – Connexion</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; }
+    .container { max-width:400px; margin:80px auto; background:#fff; padding:20px; border-radius:8px; }
+    input, button { width:100%; padding:10px; margin:8px 0; }
+    button { background:#4CAF50; color:white; border:none; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h3>Ressources</h3>
+    <div id="ressources"></div>
+    <hr />
+    <h2>Connexion</h2>
+    <input id="username" placeholder="Identifiant" />
+    <input id="password" type="password" placeholder="Mot de passe" />
+    <button onclick="login()">Se connecter</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      document.getElementById('msg').innerText = data.message;
+    }
+  
+    // === SYSTEME DE RESSOURCES ===
+    let ressources = {
+      acier: 100,
+      beton: 100,
+      personnel: 10,
+      essence: 50,
+      energie: 100
+    };
+
+    function afficherRessources() {
+      document.getElementById('ressources').innerHTML = `
+        <ul>
+          <li>Acier : ${ressources.acier}</li>
+          <li>Béton : ${ressources.beton}</li>
+          <li>Personnel : ${ressources.personnel}</li>
+          <li>Essence : ${ressources.essence}</li>
+          <li>Énergie : ${ressources.energie}</li>
+        </ul>
+      `;
+    }
+
+    // Production automatique toutes les 5 secondes
+    setInterval(() => {
+      ressources.acier += 2;
+      ressources.beton += 1;
+      ressources.energie += 3;
+      ressources.essence += 1;
+      afficherRessources();
+    }, 5000);
+
+    document.addEventListener('DOMContentLoaded', afficherRessources);
+  </script>
+</body>
+</body>
+</html>
